@@ -1,65 +1,66 @@
-type Incentive @entity {
+type V3Staker @entity {
+  # Contract address
   id: ID!
-  contract: Bytes!
+
+  #factory: Bytes!
+  #nonFungiblePositionManager: Bytes!
+  #maxIncentiveDuration: BigInt!
+  #maxIncentiveStartLeadTime: BigInt!
+
+  incentives: [Incentive!] @derivedFrom(field: "staker")
+  stakes: [Stake!] @derivedFrom(field: "staker")
+}
+
+type Incentive @entity {
+  # Incentive ID
+  id: ID!
+
+  staker: V3Staker!
+  creator: User!
+
   rewardToken: Bytes!
   pool: Bytes!
   startTime: BigInt!
   endTime: BigInt!
+  vestingPeriod: BigInt!
   refundee: Bytes!
-  reward: BigInt!
+  initialRewardAmount: BigInt!
+  #rewardAmountLeft: BigInt!
+  rewardAmountRefunded: BigInt!
   ended: Boolean!
-  positions: [IncentivePosition]! @derivedFrom(field: "incentive")
-}
 
-type IncentivePosition @entity {
-  id: ID!
-  position: Position!
-  incentive: Incentive!
-  claimed: BigInt!
-}
-
-type OwnerStaker @entity {
-  id: ID!
-  address: Bytes!
-  staker: Bytes!
-  lastUnstakedIncentivePosition: IncentivePosition
-  lastUnstakedTxHash: Bytes
-}
-
-type Position @entity {
-  id: ID!
-  owner: Bytes!
-  liquidity: BigInt!
-  stakes: [Stake]! @derivedFrom(field: "position")
-  unstakes: [Unstake]! @derivedFrom(field: "position")
-  claims: [Claim]! @derivedFrom(field: "position")
-  incentives: [IncentivePosition]! @derivedFrom(field: "position")
+  stakes: [Stake!]! @derivedFrom(field: "incentive")
 }
 
 type Stake @entity {
   id: ID!
-  txHash: Bytes!
-  timestamp: BigInt!
-  blockNumber: BigInt!
+
+  staker: V3Staker!
   position: Position!
+  incentive: Incentive!
+  user: User!
+
+  stakedTimestamp: BigInt!
+
+  #claimed: BigInt!
+  activeStake: Boolean!
 }
 
-type Unstake @entity {
+type Position @entity {
   id: ID!
-  txHash: Bytes!
-  timestamp: BigInt!
-  blockNumber: BigInt!
-  position: Position!
+
+  owner: User!
+  pool: Bytes!
+
+  liquidity: BigInt!
+
+  stakes: [Stake!]! @derivedFrom(field: "position")
 }
 
-type Claim @entity {
+type User @entity {
   id: ID!
-  txHash: Bytes!
-  timestamp: BigInt!
-  blockNumber: BigInt!
-  position: Position!
-  amount: BigInt!
-  rewardToken: Bytes!
+
+  incentivesCreated: [Incentive!]! @derivedFrom(field: "creator")
+  stakes: [Stake!]! @derivedFrom(field: "user")
+  positions: [Position!]! @derivedFrom(field: "owner")
 }
-
-

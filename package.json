@@ -7,10 +7,14 @@
     "deploy:mainnet": "graph deploy --product hosted-service revert-finance/uni-v3-staker-mainnet subgraph-mainnet.yaml",
     "codegen:polygon": "graph codegen -- subgraph-polygon.yaml",
     "build:polygon": "graph build -- subgraph-polygon.yaml",
-    "deploy:polygon": "graph deploy --product hosted-service revert-finance/uni-v3-staker-polygon subgraph-polygon.yaml"
+    "deploy:polygon": "graph deploy --product hosted-service revert-finance/uni-v3-staker-polygon subgraph-polygon.yaml",
+
+    "codegen": "graph codegen subgraph-arbitrum.yaml",
+    "build": "graph build -- subgraph-arbitrum.yaml",
+    "deploy": "graph deploy --product hosted-service jiro-ono/v3-staker subgraph-arbitrum.yaml"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "0.21.1",
-    "@graphprotocol/graph-ts": "0.20.1"
+    "@graphprotocol/graph-cli": "^0.32.0",
+    "@graphprotocol/graph-ts": "^0.27.0"
   }
 }

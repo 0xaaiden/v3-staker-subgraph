@@ -1,0 +1,41 @@
+specVersion: 0.0.4
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: V3Staker
+    network: arbitrum-one
+    source:
+      address: '0x206439339d40aA4Ce1A57CB8Cc400e67B315DD15'
+      abi: V3Staker
+      startBlock: 75441199
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Incentive
+        - OwnerStaker
+        - OwnerStakerReward
+        - IncentivePosition
+        - Position
+        - Stake
+        - Unstake
+        - Claim
+      abis:
+        - name: V3Staker
+          file: ./abis/V3Staker.json
+      eventHandlers:
+        - event: IncentiveCreated(indexed address,indexed address,uint256,uint256,uint256,address,uint256)
+          handler: handleIncentiveCreated
+        - event: IncentiveEnded(indexed bytes32,uint256)
+          handler: handleIncentiveEnded
+        - event: DepositTransferred(indexed uint256,indexed address,indexed address)
+          handler: handleDepositTransferred
+        - event: TokenStaked(indexed uint256,indexed bytes32,uint128)
+          handler: handleTokenStaked
+        - event: TokenUnstaked(indexed uint256,indexed bytes32)
+          handler: handleTokenUnstaked
+        - event: RewardClaimed(indexed address,indexed address,uint256)
+          handler: handleRewardClaimed
+      file: ./src/mappings/v3-staker.ts
