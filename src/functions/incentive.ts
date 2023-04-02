@@ -1,4 +1,4 @@
-import { Address, ethereum, crypto, BigInt, Bytes } from '@graphprotocol/graph-ts'
+import { Address, ethereum, crypto, BigInt, Bytes, ByteArray, log } from '@graphprotocol/graph-ts'
 import { Incentive } from '../../generated/schema'
 
 export function getIncentive(incentiveId: string): Incentive {
@@ -17,20 +17,35 @@ export function computeIncentiveId(
   pool: Address,
   startTime: BigInt,
   endTime: BigInt,
+  vestingPeriod: BigInt,
   refundee: Address
-): string {
-  let incentiveIdTuple: Array<ethereum.Value> = [
+): ByteArray {
+  log.debug(
+    'Compute Incentive ID: {} {} {} {} {} {}',
+    [
+      rewardToken.toHexString(),
+      pool.toHexString(),
+      startTime.toString(),
+      endTime.toString(),
+      vestingPeriod.toString(),
+      refundee.toHexString(),
+    ]
+  )
+let tupleArray: Array<ethereum.Value> = [
     ethereum.Value.fromAddress(rewardToken),
     ethereum.Value.fromAddress(pool),
     ethereum.Value.fromUnsignedBigInt(startTime),
     ethereum.Value.fromUnsignedBigInt(endTime),
+    ethereum.Value.fromUnsignedBigInt(vestingPeriod),
     ethereum.Value.fromAddress(refundee),
   ]
-  
-  let incentiveIdEncoded = ethereum.encode(
-    ethereum.Value.fromTuple(incentiveIdTuple as ethereum.Tuple)
-  )
-  let incentiveId = crypto.keccak256(incentiveIdEncoded as Bytes)
 
-  return incentiveId.toHexString()
+  let tuple = changetype<ethereum.Tuple>(tupleArray)
+
+  let incentiveIdEncoded = ethereum.encode(
+    ethereum.Value.fromTuple(tuple)
+  )
+  let incentiveId = crypto.keccak256(incentiveIdEncoded as ByteArray)
+
+  return incentiveId
 }

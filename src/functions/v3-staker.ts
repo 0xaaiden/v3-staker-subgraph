@@ -8,6 +8,7 @@ export function getV3Staker(contract: Address): V3Staker {
     // call contract to get data
     
     v3Staker = new V3Staker(contract.toHex())
+    v3Staker.save()
   }
 
   return v3Staker as V3Staker

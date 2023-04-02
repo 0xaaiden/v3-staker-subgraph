@@ -6,6 +6,7 @@ export function getUser(addy: Address): User {
 
   if (user == null) {
     user = new User(addy.toHex())
+    user.save()
   }
 
   return user as User

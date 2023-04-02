@@ -20,10 +20,10 @@ export function handleIncentiveCreated(event: IncentiveCreated): void {
   const user = getUser(event.transaction.from)
 
   //compute incentive id w/ event params
-  const incentiveId = computeIncentiveId(event.params.rewardToken, event.params.pool, event.params.startTime, event.params.endTime, event.params.refundee)
+  const incentiveId = computeIncentiveId(event.params.rewardToken, event.params.pool, event.params.startTime, event.params.endTime, event.params.vestingPeriod, event.params.refundee)
 
   // get & create the incentive entity
-  const incentive = getIncentive(incentiveId)
+  const incentive = getIncentive(incentiveId.toHexString())
   incentive.staker = v3Staker.id
   incentive.creator = user.id
   incentive.rewardToken = event.params.rewardToken
