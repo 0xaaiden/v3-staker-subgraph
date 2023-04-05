@@ -50,9 +50,9 @@ type Position @entity {
   id: ID!
 
   owner: User!
-  pool: Bytes!
+  pool: Bytes
 
-  liquidity: BigInt!
+  liquidity: BigInt
 
   stakes: [Stake!]! @derivedFrom(field: "position")
 }
